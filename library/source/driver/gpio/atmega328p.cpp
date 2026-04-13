@@ -136,8 +136,9 @@ Atmega328p::Atmega328p(const uint8_t pin, const Direction direction, void (*call
 
 // -----------------------------------------------------------------------------
 Atmega328p::~Atmega328p() noexcept 
-{   
-    // Free resources used for the GPIO before deletion.
+{
+    if (!isInitialized()) { return; }
+
     enableInterrupt(false);
     utils::clear(myHw->ddrx, myPin);
     utils::clear(myHw->portx, myPin);
@@ -219,7 +220,7 @@ Atmega328p::IoPort Atmega328p::getIoPort(const uint8_t id) const noexcept
     // Return the port associated with the given ID, or an invalid enum on failure.
     if (utils::inRange(id, Port::B0, Port::B5))      { return IoPort::B; }
     else if (utils::inRange(id, Port::C0, Port::C5)) { return IoPort::C; }
-    else if (utils::inRange(id, Port::D0, Port::D5)) { return IoPort::D; }
+    else if (utils::inRange(id, Port::D0, Port::D7)) { return IoPort::D; }
     return IoPort::Count;
 }
 
@@ -280,7 +281,10 @@ ISR(PCINT2_vect) { myCallbacks.invoke(CbIndex::PortD); }
 namespace
 {
 // -----------------------------------------------------------------------------
-constexpr bool isPinFree(const uint8_t id) noexcept { return PinCount > id; }
+constexpr bool isPinFree(const uint8_t id) noexcept
+{
+    return (PinCount > id) && !utils::read(myPinRegistry, id);
+}
 
 // -----------------------------------------------------------------------------
 constexpr bool isDirectionValid(const Direction direction) noexcept
