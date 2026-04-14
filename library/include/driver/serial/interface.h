@@ -76,7 +76,7 @@ public:
     template <typename... Args>
     bool printf(const char* format, const Args&... args) const noexcept;
 
-private:
+public:
     /**
      * @brief Print the given string in the serial terminal.
      * 

@@ -71,7 +71,7 @@ public:
     Atmega328p& operator=(const Atmega328p&)           = delete; // No copy assignment.
     Atmega328p& operator=(Atmega328p&& other) noexcept = delete; // No move assignment.
 
-private:
+public:
     /**
      * @brief Create new serial device.
      */
