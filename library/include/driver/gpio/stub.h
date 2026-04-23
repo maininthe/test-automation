@@ -9,12 +9,11 @@ namespace gpio
 class Stub final : public Interface
 {
 public:
-    Stub(Direction direction = Direction::Input) noexcept
+    explicit Stub(const Direction direction = Direction::Input) noexcept
         : myInitialized{true}
         , myDirection{direction}
         , myValue{false}
         , myInterruptEnabled{true}
-        , myInterruptOnPortEnabled{true}
     {}
 
     ~Stub() noexcept override = default;
@@ -36,20 +35,22 @@ public:
         myInterruptOnPortEnabled = enable;
     }
 
-    bool isInterruptEnabled() const noexcept { return myInterruptEnabled; }
+    bool isInterruptEnabled() const noexcept
+    {
+        return myInterruptEnabled && myInterruptOnPortEnabled;
+    }
 
     bool isInterruptOnPortEnabled() const noexcept { return myInterruptOnPortEnabled; }
 
     void setInitialized(bool initialized) noexcept { myInitialized = initialized; }
 
-    void setDirection(Direction direction) noexcept { myDirection = direction; }
-
 private:
     bool myInitialized;
-    Direction myDirection;
+    const Direction myDirection;
     bool myValue;
     bool myInterruptEnabled;
-    bool myInterruptOnPortEnabled;
+
+    inline static bool myInterruptOnPortEnabled{true};
 };
 } // namespace gpio
 } // namespace driver

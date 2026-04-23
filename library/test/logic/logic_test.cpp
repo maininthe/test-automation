@@ -17,8 +17,7 @@
 #include "driver/watchdog/stub.h"
 #include "logic/stub.h"
 
-//! @todo Remove this #ifdef block once all stubs are implemented!
-#ifdef STUBS_IMPLEMENTED
+
 
 #ifdef TESTSUITE
 
@@ -317,5 +316,4 @@ TEST(Logic, Eeprom)
 
 #endif /** TESTSUITE */
 
-//! @todo Remove this #endif once all stubs are implemented!
-#endif /** STUBS_IMPLEMENTED */
+
