@@ -2,7 +2,7 @@
  * @brief Serial driver stub.
  */
 #pragma once
-
+#include <string>
 #include <stdint.h>
 
 #ifdef TESTSUITE
@@ -101,13 +101,19 @@ public:
      * @param[in] str The string to print.
      */
     void print(const char* str) const noexcept override
-    {
-        // Print in the terminal when testing.
-        if ((!myEnabled) || (NULL == str)) { return; }
-        #ifdef TESTSUITE
-             std::cout << str;
-        #endif
-    }
+{
+    if ((!myEnabled) || (nullptr == str)) { return; }
+
+    myWrittenText += str;
+
+    #ifdef TESTSUITE
+        std::cout << str;
+    #endif
+}
+
+void clearWrittenText() noexcept { myWrittenText.clear(); }
+
+const std::string& writtenText() const noexcept { return myWrittenText; }
 
     /**
      * @brief Clear the simulated read buffer.
@@ -144,6 +150,7 @@ private:
 
     /** Indicate whether serial transmission is enabled. */
     bool myEnabled;
+    mutable std::string myWrittenText;
 };
 } // namespace serial
 } // namespace driver
