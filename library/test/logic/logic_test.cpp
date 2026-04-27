@@ -366,6 +366,26 @@ TEST(Logic, Eeprom)
         EXPECT_TRUE(mock.toggleTimer.isEnabled());
     }
 }
+
+TEST(Logic, NegativeTemperature)
+{
+    Mock mock{};
+    logic::Interface& logic{mock.createLogic()};
+    mock.runSystem();
+
+    mock.tempSensor.setTemperature(-10);
+    mock.serial.clearWrittenText();
+
+    mock.tempButton.write(true);
+    logic.handleButtonEvent();
+    mock.tempButton.write(false);
+
+    mock.debounceTimer.setTimedOut(true);
+    logic.handleDebounceTimerTimeout();
+    mock.debounceTimer.setTimedOut(false);
+
+    EXPECT_NE(mock.serial.writtenText().find("-10 Celsius"), std::string::npos);
+}
 } // namespace
 } // namespace logic
 
